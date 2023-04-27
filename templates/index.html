@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Real Estate Listing Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Real Estate Listing Generator</h1>
+    <form id="property-form">
+        <label for="lot_info">Lot Info:</label><br>
+        <input type="text" id="lot_info" name="lot_info"><br>
+
+        <label for="structure_type">Structure Type:</label><br>
+        <input type="text" id="structure_type" name="structure_type"><br>
+
+        <label for="num_bedrooms">Number of Bedrooms:</label><br>
+        <input type="number" id="num_bedrooms" name="num_bedrooms" min="0"><br>
+
+        <label for="bedroom_features">Bedroom Features:</label><br>
+        <textarea id="bedroom_features" name="bedroom_features"></textarea><br>
+
+        <label for="num_bathrooms">Number of Bathrooms:</label><br>
+        <input type="number" id="num_bathrooms" name="num_bathrooms" min="0"><br>
+
+        <label for="bathroom_features">Bathroom Features:</label><br>
+        <textarea id="bathroom_features" name="bathroom_features"></textarea><br>
+
+        <label for="kitchen_info">Kitchen Info:</label><br>
+        <textarea id="kitchen_info" name="kitchen_info"></textarea><br>
+
+        <label for="garage_info">Garage Info:</label><br>
+        <input type="text" id="garage_info" name="garage_info"><br>
+
+        <label for="other_features">Other Features:</label><br>
+        <textarea id="other_features" name="other_features"></textarea><br>
+
+        <input type="submit" value="Generate Property Description">
+    </form>
+
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Property Description</h2>
+            <p id="description-text"></p>
+        </div>
+    </div>
+
+    <script>
+        const propertyForm = document.querySelector('#property-form');
+        const modal = document.querySelector('.modal');
+        const modalContent = document.querySelector('.modal-content');
+        const descriptionElement = document.querySelector('#description-text');
+
+        propertyForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(propertyForm);
+            const lotInfo = formData.get('lot_info');
+            const structureType = formData.get('structure_type');
+            const numBedrooms = formData.get('num_bedrooms');
+            const bedroomFeatures = formData.get('bedroom_features');
+            const numBathrooms = formData.get('num_bathrooms');
+            const bathroomFeatures = formData.get('bathroom_features');
+            const kitchenInfo = formData.get('kitchen_info');
+            const garageInfo = formData.get('garage_info');
+            const otherFeatures = formData.get('other_features');
+
+            fetch('/process_property_form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    lot_info: lotInfo,
+                    structure_type: structureType,
+                    num_bedrooms: numBedrooms,
+                    bedroom_features: bedroomFeatures,
+                    num_bathrooms: numBathrooms,
+                    bathroom_features: bathroom,
+                    kitchen_info: kitchenInfo,
+                    garage_info: garageInfo,
+                    other_features: otherFeatures
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const description = data.description;
+                descriptionElement.innerHTML = description;
+                modal.style.display = 'block';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+
+        // Get the modal and the button that opens it
+        const modal = document.querySelector('.modal');
+        const modalCloseButton = document.querySelector('.close');
+
+        // When the user clicks on the button, open the modal
+        modalCloseButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
