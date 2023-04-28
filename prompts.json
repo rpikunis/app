@@ -1,0 +1,96 @@
+{
+  "model": "model_ID",
+  "prompt": [
+    {
+      "prompt": "As a realtor, your job is to sell properties, and the first step in doing so is to create a compelling property listing that captures the attention of potential buyers. To design an outstanding property listing, you need to think like a marketer and appeal to your home buyer's needs and desires. Remember, your property listing is your first impression with potential buyers, so make it count. By following these tips, you can create an outstanding property listing that will generate interest, drive traffic, and ultimately lead to a successful sale. Start by highlighting the property's unique features which are included: {lot_info}, {structure_type}, {num_bedrooms} bedrooms, {num_bathrooms} bathrooms, {kitchen_info}, {garage_info}, {other_features}. Now with all this information draft me an amazing property description to sell this home.",
+      "variables": [
+        {
+          "name": "structure_type",
+          "type": "string",
+          "default": "Single Family Home"
+        },
+        {
+          "name": "lot_info",
+          "type": "string",
+          "default": "123 Main St."
+        },
+        {
+          "name": "num_bedrooms",
+          "type": "integer",
+          "default": 4
+        },
+        {
+          "name": "bedroom_features",
+          "type": "string",
+          "default": ""
+        },
+        {
+          "name": "num_bathrooms",
+          "type": "integer",
+          "default": 3
+        },
+        {
+          "name": "bathroom_features",
+          "type": "string",
+          "default": ""
+        },
+        {
+          "name": "kitchen_info",
+          "type": "string",
+          "default": ""
+        },
+        {
+          "name": "garage_info",
+          "type": "string",
+          "default": "2-car"
+        },
+        {
+          "name": "other_features",
+          "type": "string",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "prompt": "Looking for a new home? Check out this {structure_type} located at {lot_info}. With {num_bedrooms} bedrooms and {num_bathrooms} bathrooms, this home is perfect for any family. The kitchen is fully equipped with {kitchen_info}, and the {garage_info} garage provides plenty of space for your vehicles. Additional features include {other_features}. Schedule a visit today!",
+      "variables": [
+        {
+          "name": "structure_type",
+          "type": "string",
+          "default": "Single Family Home"
+        },
+        {
+          "name": "lot_info",
+          "type": "string",
+          "default": "123 Main St."
+        },
+        {
+          "name": "num_bedrooms",
+          "type": "integer",
+          "default": 4
+        },
+        {
+          "name": "num_bathrooms",
+          "type": "integer",
+          "default": 3
+        },
+        {
+          "name": "kitchen_info",
+          "type": "string",
+          "default": "modern appliances"
+        },
+        {
+          "name": "garage_info",
+          "type": "string",
+          "default": "2-car"
+        },
+        {
+          "name": "other_features",
+          "type": "string",
+          "default": ""
+        }
+      ]
+    }
+  ],
+  "temperature": 0.8,
+  "max_tokens":

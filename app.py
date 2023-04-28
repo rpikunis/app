@@ -1,59 +1,42 @@
-from flask import Flask, render_template, jsonify, request
-import openai
-import os
+import json
+import random
+from flask import Flask, jsonify, request, render_template
 
+from generate_description import generate_description
 
-# Set up Flask app
-app = Flask(__name__, static_url_path='/static')
+app = Flask(__name__)
 
-
-# Set up OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-# Load prompt from prompts.json file
-with open("static/prompts.json", "r") as f:
-    prompt = f.read()
-
-# Set up OpenAI completion parameters
-model_engine = "text-davinci-002"
-max_tokens = 60
-temperature = 0.5
-n = 1
-
-# Define route for index page
-@app.route("/", methods=["GET"])
+@app.route("/")
 def index():
     return render_template("index.html")
 
-# Define route for processing property form data
-@app.route("/process_property_form", methods=["POST"])
-def process_property_form():
-    # Get form data
-    lot_info = request.json["lot_info"]
-    structure_type = request.json["structure_type"]
-    num_bedrooms = request.json["num_bedrooms"]
-    bedroom_features = request.json["bedroom_features"]
-    num_bathrooms = request.json["num_bathrooms"]
-    bathroom_features = request.json["bathroom_features"]
-    kitchen_info = request.json["kitchen_info"]
-    garage_info = request.json["garage_info"]
-    other_features = request.json["other_features"]
+@app.route("/generate_description", methods=["POST"])
+def get_description():
+    # Read prompts from file
+    with open('/Users/Richie/Desktop/app/prompts.json', 'r') as f:
+        prompts = json.load(f)
 
-    # Generate property description using OpenAI
-    completion = openai.Completion.create(
-        engine=model_engine,
-        prompt=prompt.format(lot_info=lot_info, structure_type=structure_type, num_bedrooms=num_bedrooms, 
-                             bedroom_features=bedroom_features, num_bathrooms=num_bathrooms, 
-                             bathroom_features=bathroom_features, kitchen_info=kitchen_info, 
-                             garage_info=garage_info, other_features=other_features),
-        max_tokens=max_tokens,
-        temperature=temperature,
-        n=n,
-    )
-    description = completion.choices[0].text.strip()
 
-    # Return property description as JSON response
-    return jsonify({"description": description})
+    # Select random prompt
+    prompt_obj = random.choice(prompts)
+    prompt = prompt_obj["prompt"]
+
+    # Fill prompt with input values
+    for variable in prompt_obj["variables"]:
+        name = variable["name"]
+        default = variable["default"]
+        value = request.form.get(name, default)
+        prompt = prompt.replace(f"{{{name}}}", str(value))
+
+    print(f"Generated prompt: {prompt}")
+
+    # Generate description using prompt
+    description = generate_description(prompt)
+
+    print(f"Generated description: {description}")
+
+    # Return description as JSON
+    return jsonify(description=description)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
